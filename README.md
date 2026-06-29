@@ -18,7 +18,7 @@ A smart clock built with the ESP32-S3 N16R8 DevBoard that displays real-time clo
 
 | Component | Details |
 |---|---|
-| ESP32-S3 DevBoard | Otronic N16R8 (16MB Flash, 8MB PSRAM) |
+| ESP32-S3 DevBoard | any esp32 but the config changes |
 | LCD Display | 1602A 16x2 Character LCD |
 | Temperature Sensor | DS18B20 module (from 37-in-1 kit) |
 | Resistor | 1kΩ (for LCD contrast on V0) |
