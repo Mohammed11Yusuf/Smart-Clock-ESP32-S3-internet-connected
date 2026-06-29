@@ -1,0 +1,21 @@
+# Arduino build artifacts
+build/
+*.bin
+*.elf
+*.hex
+*.map
+
+# Credentials — NEVER commit these
+secrets.h
+config_private.h
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# VS Code
+.vscode/
+
+# Arduino IDE temp files
+*.bak
