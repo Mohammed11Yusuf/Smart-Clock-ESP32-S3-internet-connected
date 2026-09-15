@@ -1,85 +1,45 @@
 # ⌚ ESP32-S3 Internet-Connected Smart Clock
 
-> A Wi-Fi-enabled desk clock built with ESP32-S3, a 16×2 LCD, DS18B20 temperature sensing, NTP time synchronization, and live weather data.
+> Wi-Fi smart clock using ESP32-S3, 16×2 LCD, DS18B20 temperature sensing, NTP time synchronization, and live weather data.
 
-## 📸 Project
+## 🎯 Overview
 
-The Smart Clock combines a local indoor temperature sensor with internet-based time and weather information in a compact embedded system.
+The Smart Clock combines local sensor data with internet services in a compact embedded system. It displays synchronized time, indoor temperature, and live outdoor weather information on a 16×2 LCD.
 
 ## ✨ Features
 
-- 🕐 Real-time clock synchronized using NTP
+- 🕐 NTP-synchronized date and time
 - 🌡️ Indoor temperature using DS18B20
-- 🌤️ Outdoor temperature and weather conditions using OpenWeatherMap
-- 🔄 Automatic information rotation on the LCD
+- 🌤️ Outdoor weather using OpenWeatherMap
+- 🔄 Automatic LCD information rotation
 - 🌐 Wi-Fi connectivity
-- ⏱️ Periodic weather updates to avoid unnecessary API requests
+- ⏱️ Periodic weather updates to reduce API requests
 
 ## 🏗️ System Architecture
 
 ```text
-                 Wi-Fi
-                   │
-                   ▼
-ESP32-S3 ─────── OpenWeatherMap
+                    Wi-Fi
+                      │
+                      ▼
+ESP32-S3 ───────── OpenWeatherMap
    │
-   ├──── DS18B20 ───► Indoor temperature
-   │
-   ├──── NTP ───────► Date / time
-   │
-   └──── 1602A LCD ─► User display
+   ├── DS18B20 ─────► Indoor Temperature
+   ├── NTP ─────────► Date / Time
+   └── 1602A LCD ───► User Interface
 ```
 
 ## 🧰 Hardware
 
 | Component | Purpose |
 |---|---|
-| ESP32-S3 N16R8 | Main controller and Wi-Fi |
-| 1602A LCD | User interface |
+| ESP32-S3 N16R8 | Main controller + Wi-Fi |
+| 1602A LCD | Display |
 | DS18B20 module | Indoor temperature |
-| 1kΩ resistor | LCD contrast configuration used in this build |
-| Arduino Uno | 5V supply for the LCD in this prototype |
+| 1kΩ resistor | Contrast configuration used in prototype |
+| Arduino Uno | 5V supply used for LCD in prototype |
 | Breadboard + jumpers | Prototyping |
 
-## 🔌 Wiring
-
-### Power
-
-| Rail | Source |
-|---|---|
-| 3.3V | ESP32-S3 |
-| 5V | Arduino Uno in the prototype |
-| GND | Common ground between supplies |
-
-### LCD 1602A
-
-| LCD Pin | Signal | ESP32-S3 |
-|---|---|---|
-| 1 | VSS / GND | GND |
-| 2 | VDD / +5V | 5V rail |
-| 3 | V0 / Contrast | 5V through 1kΩ in this build |
-| 4 | RS | GPIO 16 |
-| 5 | RW | GND |
-| 6 | EN | GPIO 4 |
-| 7–10 | D0–D3 | Not connected |
-| 11 | D4 | GPIO 19 |
-| 12 | D5 | GPIO 18 |
-| 13 | D6 | GPIO 5 |
-| 14 | D7 | GPIO 17 |
-| 15 | Backlight + | 5V |
-| 16 | Backlight − | GND |
-
-### DS18B20 Module
-
-| Module Pin | ESP32-S3 |
-|---|---|
-| GND | GND |
-| VCC | 3.3V |
-| DATA | GPIO 10 |
-
-> The module used in this build includes its pull-up circuitry.
-
-## 📌 GPIO Map
+## 🔌 GPIO Map
 
 | GPIO | Function |
 |---|---|
@@ -91,27 +51,17 @@ ESP32-S3 ─────── OpenWeatherMap
 | GPIO 18 | LCD D5 |
 | GPIO 19 | LCD D4 |
 
-## 💻 Software Setup
+## 🔧 Software Setup
 
-### 1. ESP32 board support
+Install **esp32 by Espressif Systems** and select **ESP32S3 Dev Module**. For the N16R8 board, configure 16 MB flash and the appropriate OPI PSRAM setting.
 
-Install **esp32 by Espressif Systems** and select **ESP32S3 Dev Module**.
-
-For this N16R8 board, configure the board with **16 MB flash** and the appropriate **OPI PSRAM** setting.
-
-### 2. Libraries
-
-Install:
+Required libraries:
 
 - OneWire
 - DallasTemperature
 - ArduinoJson
 
-`WiFi`, `HTTPClient`, and related networking functionality are provided by the ESP32 Arduino core.
-
-### 3. Configure credentials
-
-Create your own local configuration and never commit real credentials:
+Configure credentials locally using placeholders such as:
 
 ```cpp
 const char* ssid     = "YOUR_WIFI_NAME";
@@ -121,59 +71,48 @@ const char* city     = "YOUR_CITY";
 const char* country  = "IN";
 ```
 
-### 4. Upload
-
-Connect the ESP32-S3, select the correct serial port, compile, and upload. Open Serial Monitor at **115200 baud** for diagnostics.
+Never commit real Wi-Fi credentials or API keys.
 
 ## 🖥️ Display Concept
 
 ```text
-Line 1:  14:32:05 27/06
-Line 2:  In: 31.2°C
+14:32:05  27/06
+In: 31.2°C
 
-        Out: 29.5°C
-        Clouds
+Out: 29.5°C
+Clouds
 ```
 
-The second-line information rotates periodically.
+The information rotates automatically on the LCD.
 
 ## 🐛 Troubleshooting
 
 | Problem | Check |
 |---|---|
-| No COM port | USB cable, driver, and correct board/port |
-| LCD blank | Power, RW, contrast, and wiring |
-| Sensor not detected | DS18B20 pinout and GPIO 10 |
-| Weather unavailable | Wi-Fi, city configuration, and API key |
-| `ledcSetup` errors | ESP32 core 3.x uses the newer LEDC API |
-
-## 🔐 Security
-
-Never commit:
-
-- Wi-Fi passwords
-- API keys
-- OAuth credentials
-- Personal configuration files
-
-Use placeholders in the repository and keep private configuration local.
+| No COM port | USB cable, driver, board and port |
+| LCD blank | Power, RW, contrast and wiring |
+| Sensor not detected | DS18B20 wiring and GPIO 10 |
+| Weather unavailable | Wi-Fi, city and API key |
+| `ledcSetup` errors | ESP32 Arduino core 3.x API changes |
 
 ## 🗺️ Future Improvements
 
 - Dedicated 5V power solution
-- Enclosure / 3D-printed case
-- More weather information
+- 3D-printed enclosure
 - Air-quality data
-- Better LCD UI
+- Improved LCD UI
 - Button-based navigation
 - Lower-power operation
+
+## 📌 Status
+
+**Working prototype / active development.**
 
 ## 👨‍💻 Author
 
 **Mohammed Yusuf Khatai**  
-Electronics & Telecommunication Engineering Student  
-RAIT, D.Y. Patil Deemed University
+Electronics & Telecommunication Engineering Student, RAIT
 
 ## 📄 License
 
-MIT License — free to use, modify, and share.
+MIT License
